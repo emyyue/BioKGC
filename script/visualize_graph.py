@@ -31,6 +31,31 @@ def parse_args():
     return parser.parse_known_args()[0]
 
 
+def solver_load(checkpoint, load_optimizer=True):
+
+    if comm.get_rank() == 0:
+        logger.warning("Load checkpoint from %s" % checkpoint)
+    checkpoint = os.path.expanduser(checkpoint)
+    state = torch.load(checkpoint, map_location=solver.device)
+    # some issues with loading back the fact_graph and graph
+    # remove
+    state["model"].pop("fact_graph")
+    state["model"].pop("graph")
+    state["model"].pop("undirected_fact_graph")
+    # load without
+    solver.model.load_state_dict(state["model"], strict=False)
+
+
+    if load_optimizer:
+        solver.optimizer.load_state_dict(state["optimizer"])
+        for state in solver.optimizer.state.values():
+            for k, v in state.items():
+                if isinstance(v, torch.Tensor):
+                    state[k] = v.to(solver.device)
+
+    comm.synchronize()
+
+
 def build_solver(cfg):
     cfg.task.model.num_relation = _dataset.num_relation
     _task = core.Configurable.load_config_dict(cfg.task)
@@ -134,7 +159,7 @@ torch.manual_seed(1024 + comm.get_rank())
 logger = logging.getLogger(__name__)
 
 
-vocab_file = os.path.join(os.path.dirname(__file__), "../data/PC_KEGG/PC_KEGG_CHEBI_entities.txt")
+vocab_file = os.path.join(os.path.dirname(__file__), "../data/mock/entity_names.txt")
 vocab_file = os.path.abspath(vocab_file)
 
 def load_vocab(dataset):
@@ -204,7 +229,7 @@ if __name__ == "__main__":
     solver = build_solver(cfg)
 
     if "checkpoint" in cfg:
-        solver.load(cfg.checkpoint)
+        solver_load(cfg.checkpoint)
 #        state = torch.load(os.path.expanduser(cfg.checkpoint), map_location=solver.device)
 #        state["model"].pop("fact_graph")
 #        state["model"].pop("degree_hr")
