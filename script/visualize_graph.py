@@ -129,7 +129,7 @@ def visualize_echarts(graph, sample, paths, weights, entity_vocab, relation_voca
 
     graph = graph.edge_mask(edge_index)
     with graph.node():
-        graph.original_node = torch.arange(graph.num_node)
+        graph.original_node = torch.arange(graph.num_node, device=graph.device)
     graph = graph.compact()
     graph._edge_weight = torch.tensor(edge_weight, device=graph.device)
 
@@ -282,5 +282,5 @@ if __name__ == "__main__":
             if ranking[j, 1] <= 10 and not os.path.exists(save_file):
                 paths, weights = task.visualize(sample)
                 if paths:
-                        visualize_echarts(task.fact_graph, sample, paths, weights, entity_vocab, 
+                    visualize_echarts(task.fact_graph, sample, paths, weights, entity_vocab, 
                                           relation_vocab, ranking[j, 1], save_file)
