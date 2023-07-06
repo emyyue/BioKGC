@@ -109,19 +109,20 @@ def pred_to_dataframe(pred, dataset, entity_vocab, relation_vocab):
         sigmoid = torch.nn.Sigmoid()
         prob= sigmoid(pred[:, j, :])
         prob = prob.flatten().cpu().numpy()
-            
-        df_dict = {'head': np.repeat([dataset.entity_vocab[i] for i in [x.numpy()[j] for x in solver.test_set]], len(nodes)),
-                   'forward_reverse': j,
-                   'relation': np.repeat(testset_relation, len(nodes)),
-                   'tail': np.tile(nodes, len(testset_relation)),
+        
+        df_dict = {'query_node': np.repeat([dataset.entity_vocab[i] for i in [x.numpy()[j] for x in solver.test_set]], len(nodes)),
+                   'query_relation': np.repeat(testset_relation, len(nodes)),
+                   'reverse': j,
+                   'prediction_node': np.tile(nodes, len(testset_relation)),
                    'probability':prob.tolist()}
             
         dflist.append(df_dict)
+        
     df = pd.concat([pd.DataFrame(dflist[0]),pd.DataFrame(dflist[1])])
     lookup = pd.DataFrame(list(zip( dataset.entity_vocab, entity_vocab)), columns =['short', 'long'])
-        
-    df = pd.merge(df, lookup, how="left", left_on="tail", right_on="short")
-    df = pd.merge(df, lookup, how="left", left_on="head", right_on="short")
+    
+    df = pd.merge(df, lookup, how="left", left_on="query_node", right_on="short")
+    df = pd.merge(df, lookup, how="left", left_on="prediction_node", right_on="short")
     return df
 
         
