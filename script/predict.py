@@ -98,7 +98,8 @@ def get_prediction(cfg, solver, relation_vocab):
 
 def pred_to_dataframe(pred, dataset, entity_vocab, relation_vocab):
     # get head nodes
-    testset_nodes = [dataset.entity_vocab[i] for i in [x.numpy()[0] for x in solver.test_set]]
+    
+    #testset_nodes = [dataset.entity_vocab[i] for i in [x.numpy()[0] for x in solver.test_set]]
     testset_relation =  [relation_vocab[i] for i in [x.numpy()[2] for x in solver.test_set]]
     nodes = dataset.entity_vocab
     
@@ -109,10 +110,10 @@ def pred_to_dataframe(pred, dataset, entity_vocab, relation_vocab):
         prob= sigmoid(pred[:, j, :])
         prob = prob.flatten().cpu().numpy()
             
-        df_dict = {'head': np.repeat(testset_nodes, len(nodes)),
+        df_dict = {'head': np.repeat([dataset.entity_vocab[i] for i in [x.numpy()[j] for x in solver.test_set]], len(nodes)),
                    'forward_reverse': j,
                    'relation': np.repeat(testset_relation, len(nodes)),
-                   'tail': np.tile(nodes, len(testset_nodes)),
+                   'tail': np.tile(nodes, len(testset_relation)),
                    'probability':prob.tolist()}
             
         dflist.append(df_dict)
