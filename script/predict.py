@@ -120,7 +120,7 @@ def pred_to_dataframe(pred, dataset, entity_vocab, relation_vocab):
         
     df = pd.concat([pd.DataFrame(dflist[0]),pd.DataFrame(dflist[1])])
     lookup = pd.DataFrame(list(zip( dataset.entity_vocab, entity_vocab)), columns =['short', 'long'])
-    import pdb; pdb.set_trace()
+
     df = pd.merge(df, lookup, how="left", left_on="query_node", right_on="short", sort=False)
     df = pd.merge(df, lookup, how="left", left_on="prediction_node", right_on="short", sort=False)
     return df
