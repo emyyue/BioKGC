@@ -1,34 +1,39 @@
 from snakemake.shell import shell
 
 
-float_advtmp=[0.5]
+float_advtmp=[1]
 bool_condprob=['yes']
-int_negsam=[32]
+int_negsam=[64]
 str_aggfun = ["pna"]
+int_num_layers = [4]
+int_hidden_layers_dim = [32]
+int_num_epochs = [1]
+float_lr = [5.0e-3]
 
 
 
 rule all:
     input:
-      expand("log/advTmp{advtmp}_condProb_{condprob}_negSamp_{negsam}_aggFun_{aggfun}.log", 
-             negsam = int_negsam, condprob = bool_condprob, advtmp = float_advtmp, aggfun = str_aggfun
-      )
+      expand("/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job",
+       negsam = int_negsam, condprob = bool_condprob, advtmp = float_advtmp, aggfun = str_aggfun, numlayers = int_num_layers, hiddenlayersdim = int_hidden_layers_dim, numepochs = int_num_epochs, lr = float_lr)
 
 
 rule run_gridsearch:
-    #conda: "conda-envs/nbfnet.yml"
-    resources: partition="gpu_p", cpus=1, mem="32G", time="12:00:00",  gres="gpu:1", qos="gpu", nodelist="gpusrv62" #, exclude="gpusrv[12,15,17,22-23,25,26-30],supergpu[02-03,05,07-08]"
+    resources: partition="gpu_p", cpus=1, mem="64G", time="14:00:00",  gres="gpu:1", qos="gpu", nodelist="gpusrv62"
     input:
-        "../../../config/knowledge_graph/primekg/cardiovascular.yaml"
+        "/home/icb/samuele.firmani/NBFNet/config/knowledge_graph/primekg/cardiovascular.yaml"
     output:
-        "log/advTmp{advtmp}_condProb_{condprob}_negSamp_{negsam}_aggFun_{aggfun}.log"
+        "/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job"
     params:
-        negsam=lambda wildcards: wildcards.negsam,
         advtmp=lambda wildcards: wildcards.advtmp,
+        negsam=lambda wildcards: wildcards.negsam,
         condprob=lambda wildcards: wildcards.condprob,
-	aggfun=lambda wildcards: wildcards.aggfun
+    	aggfun=lambda wildcards: wildcards.aggfun,
+        hiddenlayers=lambda wildcards: ",".join(map(str, [wildcards.hiddenlayersdim]*int(wildcards.numlayers))), 
+        numepochs=lambda wildcards: wildcards.numepochs,
+        lr=lambda wildcards: wildcards.lr,
+	    numlayers=lambda wildcards: wildcards.numlayers
     shell:
         """
-        . /home/icb/yue.hu/proj_genefun/conda-env/activate_env.sh; touch log/advTmp{params.advtmp}_condProb_{params.condprob}_negSamp_{params.negsam}_aggFun_{params.aggfun}.log; python ../../../script/run.py -c {input} --gpus [0] --version v1 --adv_tmp {params.advtmp} --cond_prob {params.condprob} --neg_samp {params.negsam} --agg_fun {params.aggfun}
+        . /home/icb/samuele.firmani/NBFNet/conda-env/activate_env.sh; python /home/icb/samuele.firmani/NBFNet/script/run.py -c {input} --gpus [0] --version v1 --adv_tmp {params.advtmp} --cond_prob {params.condprob} --neg_samp {params.negsam} --agg_fun {params.aggfun} --hidden_layers [{params.hiddenlayers}] --epochs {params.numepochs} --lr {params.lr} 
         """
-

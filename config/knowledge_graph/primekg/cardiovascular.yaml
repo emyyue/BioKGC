@@ -10,7 +10,7 @@ task:
   model:
     class: NBFNet
     input_dim: 32
-    hidden_dims: [32, 32, 32, 32, 32, 32]
+    hidden_dims: {{hidden_layers}} 
     message_func: distmult
     aggregate_func: {{agg_fun}}
     short_cut: yes
@@ -33,7 +33,7 @@ task:
 
 optimizer:
   class: Adam
-  lr: 5.0e-3
+  lr: {{lr}}
 
 engine:
   gpus: {{ gpus }}
@@ -41,7 +41,7 @@ engine:
   
 
 train:
-  num_epoch: 1
+  num_epoch: {{epochs}}
   batch_per_epoch: 1000
   
 metric: mrr

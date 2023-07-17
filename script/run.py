@@ -11,6 +11,16 @@ from torchdrug.utils import comm
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from nbfnet import dataset, layer, model, task, util
 
+import time
+import random
+
+t = random.uniform(0, 10)
+
+print(f"Gonna sleep {t} seconds. Good night!!")
+
+time.sleep(t)
+
+
 def solver_load(checkpoint, load_optimizer=True):
 
     if comm.get_rank() == 0:
