@@ -17,6 +17,7 @@ In the following example (for test.txt), predictions will be made for
 - p(?|gene2, up)
 - p(?|gene1, up-1)
 
+example of test.txt
 """
 pathway15	GO:annotation	gene4
 gene2	up	gene1
