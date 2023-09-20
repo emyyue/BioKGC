@@ -2,7 +2,7 @@ output_dir: /lustre/groups/crna01/projects/genefunction/NBFNet/experiments
 
 dataset:
   class: biomedical
-  path: /home/icb/yue.hu/proj_genefun/NBFNet/data/primekg/disease_split/cardiovascular_42/
+  path: /lustre/groups/crna01/datasets/primekg/disease_split/cardiovascular_42/
   include_factgraph: True
   
 task:

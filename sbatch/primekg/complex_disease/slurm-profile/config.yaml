@@ -1,0 +1,6 @@
+jobs: 20
+latency-wait: 60
+cluster: "sbatch --ntasks 1 --parsable -p {resources.partition} --cpus-per-task {resources.cpus} --qos={resources.qos} --mem {resources.mem} --time {resources.time} --gres={resources.gres} -J snakemake.{rule}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}_{wildcards.aggfun} --output error_logs/{rule}_output_hidden_layers_{wildcards.hiddenlayersdim}_num_layers_{wildcards.numlayers}_num_epochs_{wildcards.numepochs}_lr_{wildcards.lr}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}_{wildcards.aggfun}.job --error error_logs/{rule}_error_hidden_layers_{wildcards.hiddenlayersdim}_num_layers_{wildcards.numlayers}_num_epochs_{wildcards.numepochs}_lr_{wildcards.lr}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}_{wildcards.aggfun}.job"
+#cluster: "sbatch --exclude={resources.exclude} --ntasks 1 --parsable -p {resources.partition} --cpus-per-task {resources.cpus} --qos={resources.qos} --mem {resources.mem} --time {resources.time} --gres={resources.gres} -J snakemake.{rule}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob} --output logs/{rule}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}.job --error logs/{rule}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}.job"
+use-conda: true
+# --nodelist={resources.nodelist}

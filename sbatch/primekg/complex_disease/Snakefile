@@ -1,0 +1,49 @@
+from snakemake.shell import shell
+
+
+float_advtmp=[0.5]
+bool_condprob=['yes']
+int_negsam=[64]
+str_aggfun = ["pna"]
+int_num_layers = [6]
+int_hidden_layers_dim = [32]
+int_num_epochs = [10]
+float_lr = [0.001]
+
+
+
+rule all:
+    input:
+      expand("/home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job",
+       negsam = int_negsam, condprob = bool_condprob, advtmp = float_advtmp, aggfun = str_aggfun, numlayers = int_num_layers, hiddenlayersdim = int_hidden_layers_dim, numepochs = int_num_epochs, lr = float_lr)
+
+
+rule run_gridsearch:
+    resources: partition="gpu_p", cpus=1, mem="64G", time="20:00:00",  gres="gpu:1", qos="gpu", nodelist="gpusrv[53-62]"
+    input:
+        "/home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/slurm-profile/config.yaml"
+    output:
+        "/home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job"
+    params:
+        advtmp=lambda wildcards: wildcards.advtmp,
+        negsam=lambda wildcards: wildcards.negsam,
+        condprob=lambda wildcards: wildcards.condprob,
+    	aggfun=lambda wildcards: wildcards.aggfun,
+        hiddenlayers=lambda wildcards: ",".join(map(str, [wildcards.hiddenlayersdim]*int(wildcards.numlayers))), 
+        numepochs=lambda wildcards: wildcards.numepochs,
+        lr=lambda wildcards: wildcards.lr,
+	    numlayers=lambda wildcards: wildcards.numlayers
+    shell:
+        """
+        . /home/icb/samuele.firmani/NBFNet/conda-env/activate_env.sh; \
+        python /home/icb/samuele.firmani/NBFNet/script/run.py -c {input} --gpus [0] --version v1 \
+        --adv_tmp {params.advtmp} \
+        --cond_prob {params.condprob} \
+        --neg_samp {params.negsam} \
+        --agg_fun {params.aggfun} \
+        --hidden_layers [{params.hiddenlayers}] \
+        --epochs {params.numepochs} \
+        --lr {params.lr}; \
+        mv /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/error_logs/run_gridsearch_output_hidden_layers_{wildcards.hiddenlayersdim}_num_layers_{wildcards.numlayers}_num_epochs_{wildcards.numepochs}_lr_{wildcards.lr}_{wildcards.negsam}_{wildcards.advtmp}_{wildcards.condprob}_{wildcards.aggfun}.job \
+        /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/
+        """

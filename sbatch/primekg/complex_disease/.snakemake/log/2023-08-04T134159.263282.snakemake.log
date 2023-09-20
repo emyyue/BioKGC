@@ -1,0 +1,5 @@
+Building DAG of jobs...
+MissingInputException in line 15 of /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/Snakefile:
+Missing input files for rule all:
+    affected files:
+        /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_error_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job

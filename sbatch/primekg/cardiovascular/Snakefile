@@ -1,29 +1,29 @@
 from snakemake.shell import shell
 
 
-float_advtmp=[1]
+float_advtmp=[1, 0.5, 2]
 bool_condprob=['yes']
 int_negsam=[64]
 str_aggfun = ["pna"]
-int_num_layers = [4]
+int_num_layers = [4, 6]
 int_hidden_layers_dim = [32]
-int_num_epochs = [1]
-float_lr = [5.0e-3]
+int_num_epochs = [10]
+float_lr = [0.005, 0.001]
 
 
 
 rule all:
     input:
-      expand("/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job",
+      expand("/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_error_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job",
        negsam = int_negsam, condprob = bool_condprob, advtmp = float_advtmp, aggfun = str_aggfun, numlayers = int_num_layers, hiddenlayersdim = int_hidden_layers_dim, numepochs = int_num_epochs, lr = float_lr)
 
 
 rule run_gridsearch:
-    resources: partition="gpu_p", cpus=1, mem="64G", time="14:00:00",  gres="gpu:1", qos="gpu", nodelist="gpusrv62"
+    resources: partition="gpu_p", cpus=1, mem="64G", time="20:00:00",  gres="gpu:1", qos="gpu", nodelist="gpusrv[53-62]"
     input:
         "/home/icb/samuele.firmani/NBFNet/config/knowledge_graph/primekg/cardiovascular.yaml"
     output:
-        "/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_output_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job"
+        "/home/icb/samuele.firmani/NBFNet/sbatch/primekg/cardiovascular/logs/run_gridsearch_error_hidden_layers_{hiddenlayersdim}_num_layers_{numlayers}_num_epochs_{numepochs}_lr_{lr}_{negsam}_{advtmp}_{condprob}_{aggfun}.job"
     params:
         advtmp=lambda wildcards: wildcards.advtmp,
         negsam=lambda wildcards: wildcards.negsam,

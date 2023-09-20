@@ -1,0 +1,40 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 20
+Job stats:
+job               count    min threads    max threads
+--------------  -------  -------------  -------------
+all                   1              1              1
+run_gridsearch        1              1              1
+total                 2              1              1
+
+Select jobs to execute...
+
+[Fri Aug  4 13:46:54 2023]
+rule run_gridsearch:
+    input: /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/slurm-profile/config.yaml
+    output: /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_output_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job
+    jobid: 1
+    reason: Missing output files: /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_output_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job
+    wildcards: hiddenlayersdim=32, numlayers=6, numepochs=10, lr=0.001, negsam=64, advtmp=0.5, condprob=yes, aggfun=pna
+    resources: mem_mb=1000, disk_mb=1000, tmpdir=/tmp, partition=gpu_p, cpus=1, mem=64G, time=20:00:00, gres=gpu:1, qos=gpu, nodelist=gpusrv[53-62]
+
+
+        . /home/icb/samuele.firmani/NBFNet/conda-env/activate_env.sh;         python /home/icb/samuele.firmani/NBFNet/script/run.py -c /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/slurm-profile/config.yaml --gpus [0] --version v1         --adv_tmp 0.5         --cond_prob yes         --neg_samp 64         --agg_fun pna         --hidden_layers [32,32,32,32,32,32]         --epochs 10         --lr 0.001;         mv /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/error_logs/run_gridsearch_output_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job         /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/
+        
+Your conda installation is not configured to use strict channel priorities. This is however crucial for having robust and correct environments (for details, see https://conda-forge.org/docs/user/tipsandtricks.html). Please consider to configure strict priorities by executing 'conda config --set channel_priority strict'.
+Submitted job 1 with external jobid '12800800'.
+[Fri Aug  4 13:50:55 2023]
+Error in rule run_gridsearch:
+    jobid: 1
+    output: /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/run_gridsearch_output_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job
+    shell:
+        
+        . /home/icb/samuele.firmani/NBFNet/conda-env/activate_env.sh;         python /home/icb/samuele.firmani/NBFNet/script/run.py -c /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/slurm-profile/config.yaml --gpus [0] --version v1         --adv_tmp 0.5         --cond_prob yes         --neg_samp 64         --agg_fun pna         --hidden_layers [32,32,32,32,32,32]         --epochs 10         --lr 0.001;         mv /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/error_logs/run_gridsearch_output_hidden_layers_32_num_layers_6_num_epochs_10_lr_0.001_64_0.5_yes_pna.job         /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/logs/
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: 12800800
+
+Error executing rule run_gridsearch on cluster (jobid: 1, external: 12800800, jobscript: /home/icb/samuele.firmani/NBFNet/sbatch/primekg/complex_disease/.snakemake/tmp.21fx788a/snakejob.run_gridsearch.1.sh). For error details see the cluster log and the log files of the involved rule(s).
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2023-08-04T134643.870741.snakemake.log
