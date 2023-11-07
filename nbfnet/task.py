@@ -916,6 +916,8 @@ class KnowledgeGraphCompletionBiomedEval(KnowledgeGraphCompletionBiomed, core.Co
                                                   torch.flip(torch.transpose(target, 0, 1), [0]), out=ranking_filt)
         valid_ranking =  np.ma.masked_where(ranking_filt == 0, ranking_filt)
         
+        MRR_per_node = (1/valid_ranking)
+        import pdb; pdb.set_trace()
 
         # get neg_pred
         mask_inv_target = torch.ones_like(pred, dtype=torch.bool)
@@ -932,7 +934,7 @@ class KnowledgeGraphCompletionBiomedEval(KnowledgeGraphCompletionBiomed, core.Co
             # pos pred per h node
             idx1 = (trans_target[:,0] == i).nonzero().squeeze(-1)
             idx3 = target[idx1][:,0]
-            print(idx1, 0, idx3)
+            #print(idx1, 0, idx3)
             pos_pred_node = pred[idx1, 0, idx3]
             # neg pred per h node
             neg_pred_node = pred[idx1[0], 0, :].masked_select(mask_inv_target[idx1[0], 0,:])
