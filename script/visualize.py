@@ -103,6 +103,7 @@ if __name__ == "__main__":
     args, vars = util.parse_args()
     cfg = util.load_config(args.config, context=vars)
     working_dir = util.create_working_directory(cfg)
+    print(working_dir)
     vocab_file = os.path.join(os.path.dirname(__file__), cfg.dataset.path, "entity_names.txt")
     vocab_file = os.path.abspath(vocab_file)
     torch.manual_seed(args.seed + comm.get_rank())
@@ -111,6 +112,7 @@ if __name__ == "__main__":
     logger.warning("Config file: %s" % args.config)
     logger.warning(pprint.pformat(cfg))
 
+    cfg.dataset.files = ['train1.txt', 'train2.txt', 'valid.txt', 'test_eval.txt']
     _dataset = core.Configurable.load_config_dict(cfg.dataset)
     train_set, valid_set, test_set = _dataset.split()
     solver = build_solver(cfg)
