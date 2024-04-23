@@ -171,5 +171,10 @@ if __name__ == "__main__":
         df = merge_with_entity_vocab(df, _dataset, entity_vocab, relation_vocab)
         logger.warning("Link prediction done")
         logger.warning("Saving to file")
+<<<<<<< HEAD
         print(os.path.join(working_dir, "predictions_" + os.path.splitext(i)[0] + ".csv"))
         df.to_csv(os.path.join(working_dir, "predictions_" + os.path.splitext(i)[0] + ".csv"), index=False, sep="\t")
+=======
+        print(os.path.join(working_dir, "predictions_", os.path.splitext(i)[0], ".csv"))
+        df.to_csv(os.path.join(working_dir, "predictions_", os.path.splitext(i)[0], ".csv"), index=False, sep="\t")
+>>>>>>> 207850ec70cf4d8b8a2d0d081ca661421e952aba
