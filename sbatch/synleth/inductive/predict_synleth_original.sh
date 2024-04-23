@@ -3,12 +3,12 @@
 #SBATCH --output=./slurm_out/pred_synleth_original_seeds-%j.txt
 #SBATCH --error=./slurm_out/pred_synleth_original_seeds-%j.txt
 #SBATCH --time=4:00:00
-#SBATCH --mem=128Gb
+#SBATCH --mem=64Gb
 #SBATCH -c 4
 #SBATCH --gres=gpu:1
 #SBATCH -p gpu_p
 #SBATCH --qos=gpu_normal
-#SBATCH --constraint=a100_80gb
+##SBATCH --constraint=a100_80gb
 ##SBATCH -w gpusrv61
 
 CONDA_DIR=/home/icb/yue.hu/proj_genefun/conda-env/miniconda3
@@ -30,6 +30,6 @@ ARRAY=("2024-02-09-09-57-55-848775:14"
 
 for i in "${ARRAY[@]}"
 do	
-	python script/predict.py -c  config/knowledge_graph/synleth/inductive/synleth_inductive_5layers_original_pred.yaml --gpus [0] --checkpoint /home/icb/yue.hu/proj_genefun/NBFNet/experiments/KnowledgeGraphCompletionBiomed/biomedical/NBFNet/"${i%%:*}"/model_epoch_"${i##*:}".pth
+	#python script/predict.py -c  config/knowledge_graph/synleth/inductive/synleth_inductive_5layers_original_pred.yaml --gpus [0] --checkpoint /home/icb/yue.hu/proj_genefun/NBFNet/experiments/KnowledgeGraphCompletionBiomed/biomedical/NBFNet/"${i%%:*}"/model_epoch_"${i##*:}".pth
 	python script/quick_eval.py -c config/knowledge_graph/synleth/inductive/synleth_inductive_5layers_original_eval.yaml --gpus [0] --checkpoint /home/icb/yue.hu/proj_genefun/NBFNet/experiments/KnowledgeGraphCompletionBiomed/biomedical/NBFNet/"${i%%:*}"/model_epoch_"${i##*:}".pth
 done
